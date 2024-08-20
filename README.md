@@ -20,7 +20,6 @@ Certifique-se de ter o Python 3.x instalado em sua máquina. Você pode verifica
 
 ```bash
 python --version
-
 ```
 
 ## Passos para Configuração
@@ -34,24 +33,22 @@ python --version
    cd seu-repositorio
 ```
 
-### 2. **Crie um ambiente virtual [opcional, mas recomendado] **
+### 2. **Crie um ambiente virtual [opcional, mas recomendado]**
 
-    ```bash
     python -m venv venv
     source venv/bin/activate  # No Windows use `venv\Scripts\activate`
-    ```
+
 
 ### 3. **Instale as dependências:**
-    ```bash
+
     pip install -r requirements.txt
-    ```
+
 
 ### 4. **Execute a aplicação:**
-    ```bash
+
     python app.py
-    ```
+
 
 ### 5. **Acesse a aplicação:**
-    ```bash
+
     Abra o navegador e vá para http://127.0.0.1:5000/ para acessar a aplicação.
-    ```
