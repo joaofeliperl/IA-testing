@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop File Upload</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+
+    <div id="dropZone">
+        <p>Drag and drop files here<br>or click to select files</p>
+        <input type="file" id="fileInput" multiple />
+    </div>
+
+    <div id="imageContainer"></div>
+
+    <div id="noImages" style="display: flex;">
+        <img src="https://img.icons8.com/material-outlined/24/000000/image.png" alt="No Image Icon">
+        <img src="https://img.icons8.com/material-outlined/24/000000/image.png" alt="No Image Icon">
+        <img src="https://img.icons8.com/material-outlined/24/000000/image.png" alt="No Image Icon">
+    </div>
+
+    <textarea id="generalDescription" placeholder="Escreva uma descrição.."></textarea>
+
+    <button id="submitButton">
+        <img src="https://img.icons8.com/material-outlined/24/ffffff/up.png" alt="Up Arrow Icon">
+    </button>
+
+    <script src="../static/scripts.js"></script>
+
+</body>
+</html>

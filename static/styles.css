@@ -1,0 +1,123 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* Light blue background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#dropZone {
+    border: 2px dashed #1e90ff; /* Dodger blue border */
+    background-color: #e6f7ff; /* Very light blue background */
+    padding: 40px;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+#dropZone p {
+    color: #1e90ff; /* Dodger blue text */
+    font-size: 16px;
+    margin: 0;
+}
+
+#fileInput {
+    display: none; /* Hide the default file input */
+}
+
+#dropZone.dragover {
+    background-color: #d0eaff; /* Darker light blue when dragging over */
+    border-color: #4682b4; /* Steel blue border when dragging over */
+}
+
+#imageContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.imagePreview {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.deleteButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red; /* Red background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px; /* Adjust font size to fit the button */
+    font-weight: bold; /* Make 'X' bold */
+}
+
+#generalDescription {
+    margin-top: 20px;
+    width: 300px;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+#noImages {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: row; /* Align items horizontally */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between icons */
+    margin-top: 20px;
+}
+
+#noImages img {
+    width: 50px;
+    height: 50px;
+}
+
+#submitButton {
+    margin-top: 20px;
+    background-color: #1e90ff; /* Dodger blue background */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px; /* Add horizontal padding */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: relative;
+    /* Align button with the right edge of the description box */
+}
+
+#submitButton img {
+    width: 20px;
+    height: 20px;
+    margin-left: 8px; /* Space between text and icon */
+}
+
+#submitButton:hover {
+    background-color: #4682b4; /* Darker blue on hover */
+}
