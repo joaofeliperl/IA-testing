@@ -1,86 +1,10 @@
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f0f8ff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+.custom-navbar-height .navbar-brand,
+.custom-navbar-height .nav-link {
+    line-height: 40px;
 }
 
-#dropZone {
-    border: 2px solid #1e90ff;
-    background-color: #e6f7ff;
-    padding: 60px;
-    width: 350px;
+.h1 {
     text-align: center;
-    border-radius: 15px;
-    transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#dropZone p {
-    color: #1e90ff;
-    font-size: 18px;
-    margin: 0;
-}
-
-#fileInput {
-    display: none;
-}
-
-#dropZone.dragover {
-    background-color: #d0eaff;
-    border-color: #4682b4;
-    transform: scale(1.05);
-}
-
-#imageContainer {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-}
-
-.imagePreview {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 120px;
-    height: 120px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s;
-}
-
-.imagePreview:hover {
-    transform: scale(1.1);
-}
-
-.deleteButton {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(255, 0, 0, 0.7);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.deleteButton:hover {
-    background-color: rgba
+    padding: 10px;
 }
