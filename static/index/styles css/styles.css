@@ -1,0 +1,52 @@
+.custom-navbar-height .navbar-brand,
+.custom-navbar-height .nav-link {
+    line-height: 40px;
+}
+
+h1 {
+    text-align: center;
+    padding: 30px;
+    color: white !important;
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    background-color: #161616 !important;
+}
+
+.navbar {
+    background-color: gray;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.custom-navbar-height {
+    height: 80px;
+}
+
+.custom-navbar-height .navbar-brand,
+.custom-navbar-height .nav-link {
+    line-height: 80px;
+}
+
+.card {
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 20px !important;
+    overflow: hidden;
+    padding: 50px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
