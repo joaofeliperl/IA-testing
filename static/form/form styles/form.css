@@ -1,0 +1,208 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #202020;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    width: 400px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff !important; /* Força a cor branca para o título */
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label, p, input[type="text"], textarea, button {
+    color: #fff; /* Cor branca para o texto */
+}
+
+input[type="text"],
+textarea {
+    background-color: #ebe0e0;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    min-height: 100px; /* Altura mínima */
+    
+}
+
+.drag-and-drop {
+    border: 2px dashed #888;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.drag-and-drop p {
+    color: #888;
+}
+
+button {
+    background-color: #444;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+#imagePreview {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.image-container {
+    position: relative;
+    max-width: 30%;
+    margin-right: 10px;
+}
+
+.uploaded-image {
+    width: 100%;
+    max-height: 100px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.remove-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-btn:hover {
+    background-color: darkred;
+}
+
+/* Adicione isso ao seu arquivo CSS, se necessário */
+input[type="text"] {
+    margin-bottom: 15px;
+}
+
+/* Estilos para os botões no formulário */
+.form-buttons {
+    display: flex;
+    justify-content: space-between; /* Espaça os botões para as extremidades */
+    margin-top: 15px; /* Espaço acima dos botões */
+}
+
+/* Estilos para o contêiner dos botões */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Espaço acima dos botões */
+}
+
+/* Estilos para os botões */
+.btn {
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer; /* Adiciona um cursor pointer para botões */
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: #fff; /* Cor do texto do botão */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: #fff; /* Cor do texto do botão */
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+ 
+/* Estilo para o contêiner de pré-visualização das imagens */
+#imagePreview {
+    display: flex;
+    justify-content: center; /* Centraliza as imagens horizontalmente */
+    align-items: center; /* Alinha verticalmente as imagens no centro do contêiner */
+    gap: 10px; /* Ajusta o espaçamento entre as imagens */
+    margin-top: 10px;
+    flex-wrap: wrap; /* Permite que as imagens se movam para a linha seguinte se houver espaço insuficiente na linha atual */
+}
+
+/* Estilo para cada contêiner de imagem */
+.image-container {
+    position: relative;
+    max-width: 30%; /* Limita a largura máxima de cada imagem */
+    margin: 0; /* Remove a margem para que o espaçamento entre imagens seja controlado pelo flexbox */
+}
+
+/* Estilo para as imagens */
+.uploaded-image {
+    width: 100%;
+    max-height: 100px;
+    border-radius: 5px;
+    object-fit: cover; /* Garante que as imagens se ajustem dentro do contêiner sem distorcer */
+}
+
+/* Estilo para campos de texto e textarea */
+input[type="text"], textarea {
+    background-color: #ebe0e0;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #000; /* Cor do texto dentro do campo */
+}
