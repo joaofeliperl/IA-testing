@@ -55,6 +55,7 @@ function handleFiles(files) {
             // Função de remoção
             removeBtn.addEventListener('click', function() {
                 imageContainer.remove();
+                updateImageCount(); // Atualiza a contagem de imagens
             });
 
             imageContainer.appendChild(img);
@@ -73,5 +74,14 @@ function handleFiles(files) {
         } else {
             alert("Apenas imagens são permitidas.");
         }
+    }
+}
+
+function updateImageCount() {
+    const imagePreview = document.getElementById('imagePreview');
+    let existingImages = imagePreview.children.length;
+
+    if (existingImages < 3) {
+        alert(`Você pode adicionar mais imagens. Restam ${3 - existingImages} imagens.`);
     }
 }

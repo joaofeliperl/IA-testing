@@ -29,7 +29,6 @@ h1 {
     color: #fff !important; /* Força a cor branca para o título */
 }
 
-
 form {
     display: flex;
     flex-direction: column;
@@ -41,15 +40,14 @@ label, p, input[type="text"], textarea, button {
 
 input[type="text"],
 textarea {
-    background-color: #ebe0e0;
+    background-color: #A9A9A9;
     border: none;
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 15px;
     width: 100%;
-    resize: vertical; /* Permite redimensionar verticalmente */
-    min-height: 100px; /* Altura mínima */
-    
+    box-sizing: border-box;
+    color: #000; /* Cor do texto dentro do campo */
 }
 
 .drag-and-drop {
@@ -84,21 +82,24 @@ input[type="file"] {
 
 #imagePreview {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Centraliza as imagens horizontalmente */
+    align-items: center; /* Alinha verticalmente as imagens no centro do contêiner */
+    gap: 10px; /* Ajusta o espaçamento entre as imagens */
     margin-top: 10px;
+    flex-wrap: wrap; /* Permite que as imagens se movam para a linha seguinte se houver espaço insuficiente na linha atual */
 }
 
 .image-container {
     position: relative;
-    max-width: 30%;
-    margin-right: 10px;
+    max-width: 30%; /* Limita a largura máxima de cada imagem */
+    margin: 0; /* Remove a margem para que o espaçamento entre imagens seja controlado pelo flexbox */
 }
 
 .uploaded-image {
     width: 100%;
     max-height: 100px;
     border-radius: 5px;
-    object-fit: cover;
+    object-fit: cover; /* Garante que as imagens se ajustem dentro do contêiner sem distorcer */
 }
 
 .remove-btn {
@@ -122,19 +123,46 @@ input[type="file"] {
     background-color: darkred;
 }
 
-/* Adicione isso ao seu arquivo CSS, se necessário */
-input[type="text"] {
-    margin-bottom: 15px;
+/* Estilos para as opções de rádio */
+.radio-options {
+    display: flex;
+    flex-direction: column; /* Exibe as opções de rádio em coluna */
+    gap: 10px; /* Espaçamento entre as opções de rádio */
+    
+}
+
+/* Estilos para o campo de input de quantidade */
+.quantity-input {
+    display: flex;
+    flex-direction: column; /* Exibe o label acima do input */
+    margin-right: 20px; /* Espaçamento à direita para separar do botão de rádio */
+}
+
+.quantity-input label {
+    color: #fff; /* Cor do texto */
+    margin-bottom: 5px; /* Espaçamento abaixo do label */
+}
+
+.quantity-input input[type="number"] {
+    width: 60px; /* Define a largura do campo como 150 pixels */
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    background-color: #ebe0e0; /* Cor do fundo do input */
+    color: #000; /* Cor do texto no input */
+    text-align: center; /* Centraliza o texto dentro do input */
+}
+
+/* Estilos para a div que contém o campo de quantidade e os botões de rádio */
+.quantity-radio-container {
+    display: flex;
+    align-items: center; /* Alinha verticalmente os itens */
+    gap: 20px; /* Espaçamento entre o campo e as opções de rádio */
+    margin-bottom: 15px; /* Espaçamento abaixo dos itens */
+    
 }
 
 /* Estilos para os botões no formulário */
-.form-buttons {
-    display: flex;
-    justify-content: space-between; /* Espaça os botões para as extremidades */
-    margin-top: 15px; /* Espaço acima dos botões */
-}
-
-/* Estilos para o contêiner dos botões */
 .form-buttons {
     display: flex;
     justify-content: flex-end; /* Alinha os botões à direita */
@@ -142,14 +170,54 @@ input[type="text"] {
     margin-top: 15px; /* Espaço acima dos botões */
 }
 
-/* Estilos para os botões */
+/* Estilos para o contêiner dos botões */
 .btn {
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer; /* Adiciona um cursor pointer para botões */
+    
 }
 
+/* Estilos para o contêiner que alinha o campo de quantidade e o botão */
+.quantity-radio-container {
+    display: flex;
+    align-items: center; /* Alinha verticalmente */
+    justify-content: space-between; /* Distribui o espaço entre o campo e o botão */
+    margin-bottom: 15px; /* Espaçamento abaixo */
+}
+
+/* Estilos específicos para o campo de quantidade */
+.quantity-input {
+    flex: 1; /* Permite que o campo ocupe o máximo de espaço disponível */
+    margin-right: 10px; /* Espaçamento entre o campo e o botão */
+}
+
+.quantity-input label {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.quantity-input input[type="number"] {
+    width: 5%; /* Faz com que o campo de número ocupe toda a largura disponível */
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    background-color: #ebe0e0;
+    color: #000;
+    text-align: center;
+}
+
+/* Estilos para o botão radius bottow */
+.radius-button {
+    background-color: #444;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    color: #fff;
+    cursor: pointer;
+    
+}
 .btn-primary {
     background-color: #007bff;
     border: none;
@@ -168,41 +236,4 @@ input[type="text"] {
 
 .btn-secondary:hover {
     background-color: #5a6268;
-}
- 
-/* Estilo para o contêiner de pré-visualização das imagens */
-#imagePreview {
-    display: flex;
-    justify-content: center; /* Centraliza as imagens horizontalmente */
-    align-items: center; /* Alinha verticalmente as imagens no centro do contêiner */
-    gap: 10px; /* Ajusta o espaçamento entre as imagens */
-    margin-top: 10px;
-    flex-wrap: wrap; /* Permite que as imagens se movam para a linha seguinte se houver espaço insuficiente na linha atual */
-}
-
-/* Estilo para cada contêiner de imagem */
-.image-container {
-    position: relative;
-    max-width: 30%; /* Limita a largura máxima de cada imagem */
-    margin: 0; /* Remove a margem para que o espaçamento entre imagens seja controlado pelo flexbox */
-}
-
-/* Estilo para as imagens */
-.uploaded-image {
-    width: 100%;
-    max-height: 100px;
-    border-radius: 5px;
-    object-fit: cover; /* Garante que as imagens se ajustem dentro do contêiner sem distorcer */
-}
-
-/* Estilo para campos de texto e textarea */
-input[type="text"], textarea {
-    background-color: #ebe0e0;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 15px;
-    width: 100%;
-    box-sizing: border-box;
-    color: #000; /* Cor do texto dentro do campo */
 }
