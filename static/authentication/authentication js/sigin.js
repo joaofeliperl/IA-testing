@@ -55,3 +55,33 @@
 
 
 })(jQuery);
+
+document.getElementById('toggle-password').addEventListener('click', function () {
+    var passwordField = document.getElementById('password-field');
+    var passwordIcon = this.querySelector('i');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        passwordIcon.classList.remove('fa-eye');
+        passwordIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        passwordIcon.classList.remove('fa-eye-slash');
+        passwordIcon.classList.add('fa-eye');
+    }
+});
+
+document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+    var confirmPasswordField = document.getElementById('confirm-password-field');
+    var confirmPasswordIcon = this.querySelector('i');
+
+    if (confirmPasswordField.type === 'password') {
+        confirmPasswordField.type = 'text';
+        confirmPasswordIcon.classList.remove('fa-eye');
+        confirmPasswordIcon.classList.add('fa-eye-slash');
+    } else {
+        confirmPasswordField.type = 'password';
+        confirmPasswordIcon.classList.remove('fa-eye-slash');
+        confirmPasswordIcon.classList.add('fa-eye');
+    }
+});

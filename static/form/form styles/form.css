@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #202020;
+    background-color: #1C1C1C !important;
     color: #fff;
     display: flex;
     justify-content: center;
@@ -20,13 +20,13 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-    width: 400px;
+    height: 800px;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #fff !important; /* Força a cor branca para o título */
+    color: #fff !important;
 }
 
 form {
@@ -34,20 +34,30 @@ form {
     flex-direction: column;
 }
 
-label, p, input[type="text"], textarea, button {
-    color: #fff; /* Cor branca para o texto */
+label,
+p,
+input[type="text"],
+textarea,
+button {
+    color: #fff;
 }
 
-input[type="text"],
-textarea {
+#funcionalidade {
+    height: 40px;
     background-color: #A9A9A9;
     border: none;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 15px;
+    border-radius: 3px;
+    margin-bottom: 20px;
     width: 100%;
     box-sizing: border-box;
-    color: #000; /* Cor do texto dentro do campo */
+    color: #000;
+}
+
+textarea,
+.drag-and-drop,
+.quantity-radio-container,
+#descricao {
+    margin-bottom: 10px;
 }
 
 .drag-and-drop {
@@ -55,8 +65,9 @@ textarea {
     border-radius: 5px;
     padding: 20px;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     cursor: pointer;
+    height: 120px;
 }
 
 .drag-and-drop p {
@@ -82,24 +93,24 @@ input[type="file"] {
 
 #imagePreview {
     display: flex;
-    justify-content: center; /* Centraliza as imagens horizontalmente */
-    align-items: center; /* Alinha verticalmente as imagens no centro do contêiner */
-    gap: 10px; /* Ajusta o espaçamento entre as imagens */
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     margin-top: 10px;
-    flex-wrap: wrap; /* Permite que as imagens se movam para a linha seguinte se houver espaço insuficiente na linha atual */
+    flex-wrap: wrap;
 }
 
 .image-container {
     position: relative;
-    max-width: 30%; /* Limita a largura máxima de cada imagem */
-    margin: 0; /* Remove a margem para que o espaçamento entre imagens seja controlado pelo flexbox */
+    max-width: 30%;
+    margin: 0;
 }
 
 .uploaded-image {
     width: 100%;
     max-height: 100px;
     border-radius: 5px;
-    object-fit: cover; /* Garante que as imagens se ajustem dentro do contêiner sem distorcer */
+    object-fit: cover;
 }
 
 .remove-btn {
@@ -123,105 +134,58 @@ input[type="file"] {
     background-color: darkred;
 }
 
-/* Estilos para as opções de rádio */
 .radio-options {
     display: flex;
-    flex-direction: column; /* Exibe as opções de rádio em coluna */
-    gap: 10px; /* Espaçamento entre as opções de rádio */
-    
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
-/* Estilos para o campo de input de quantidade */
 .quantity-input {
     display: flex;
-    flex-direction: column; /* Exibe o label acima do input */
-    margin-right: 20px; /* Espaçamento à direita para separar do botão de rádio */
-}
+    flex-direction: column;
+    padding-bottom: 10px;
 
-.quantity-input label {
-    color: #fff; /* Cor do texto */
-    margin-bottom: 5px; /* Espaçamento abaixo do label */
 }
 
 .quantity-input input[type="number"] {
-    width: 60px; /* Define a largura do campo como 150 pixels */
-    padding: 8px;
+    width: 20%;
     border-radius: 5px;
     border: none;
-    background-color: #ebe0e0; /* Cor do fundo do input */
-    color: #000; /* Cor do texto no input */
-    text-align: center; /* Centraliza o texto dentro do input */
-}
-
-/* Estilos para a div que contém o campo de quantidade e os botões de rádio */
-.quantity-radio-container {
-    display: flex;
-    align-items: center; /* Alinha verticalmente os itens */
-    gap: 20px; /* Espaçamento entre o campo e as opções de rádio */
-    margin-bottom: 15px; /* Espaçamento abaixo dos itens */
-    
-}
-
-/* Estilos para os botões no formulário */
-.form-buttons {
-    display: flex;
-    justify-content: flex-end; /* Alinha os botões à direita */
-    gap: 10px; /* Espaçamento entre os botões */
-    margin-top: 15px; /* Espaço acima dos botões */
-}
-
-/* Estilos para o contêiner dos botões */
-.btn {
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer; /* Adiciona um cursor pointer para botões */
-    
-}
-
-/* Estilos para o contêiner que alinha o campo de quantidade e o botão */
-.quantity-radio-container {
-    display: flex;
-    align-items: center; /* Alinha verticalmente */
-    justify-content: space-between; /* Distribui o espaço entre o campo e o botão */
-    margin-bottom: 15px; /* Espaçamento abaixo */
-}
-
-/* Estilos específicos para o campo de quantidade */
-.quantity-input {
-    flex: 1; /* Permite que o campo ocupe o máximo de espaço disponível */
-    margin-right: 10px; /* Espaçamento entre o campo e o botão */
-}
-
-.quantity-input label {
-    color: #fff;
-    margin-bottom: 5px;
-}
-
-.quantity-input input[type="number"] {
-    width: 5%; /* Faz com que o campo de número ocupe toda a largura disponível */
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
-    background-color: #ebe0e0;
+    background-color: #A9A9A9;
     color: #000;
     text-align: center;
 }
 
-/* Estilos para o botão radius bottow */
-.radius-button {
-    background-color: #444;
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#descricao {
+    height: 150px;
+    width: 100%;
+    background-color: #A9A9A9;
     border: none;
     border-radius: 5px;
     padding: 10px;
-    color: #fff;
-    cursor: pointer;
-    
+    color: #000;
 }
+
+.btn {
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 .btn-primary {
     background-color: #007bff;
     border: none;
-    color: #fff; /* Cor do texto do botão */
+    color: #fff;
 }
 
 .btn-primary:hover {
@@ -231,7 +195,7 @@ input[type="file"] {
 .btn-secondary {
     background-color: #6c757d;
     border: none;
-    color: #fff; /* Cor do texto do botão */
+    color: #fff;
 }
 
 .btn-secondary:hover {

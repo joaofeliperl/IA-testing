@@ -281,7 +281,7 @@ iframe {
     font-family: Poppins-Medium;
     font-size: 15px;
     line-height: 1.5;
-    color: #fff;
+    color: #999999;
 
     display: block;
     width: 100%;
@@ -507,4 +507,24 @@ iframe {
         visibility: visible;
         opacity: 1;
     }
+}
+
+
+.wrap-input100 {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 18px;
+    top: 55%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.toggle-password i {
+    font-size: 20px;
+    color: #666;
 }
