@@ -1,0 +1,98 @@
+.custom-navbar-height .navbar-brand,
+.custom-navbar-height .nav-link {
+    line-height: 40px;
+}
+
+.navbar {
+    background-color: gray;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.custom-navbar-height {
+    height: 80px;
+}
+
+.custom-navbar-height .navbar-brand,
+.custom-navbar-height .nav-link {
+    line-height: 80px;
+}
+
+/* Estilo geral do fundo */
+body {
+    background-color: #1c1c1c; /* Cor de fundo escura */
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo do card cinza */
+.gray-card {
+    background-color: #A9A9A9; /* Fundo cinza */
+    border-radius: 15px; /* Borda arredondada */
+    padding: 20px; /* Espaçamento interno */
+    color: #000; /* Cor do texto */
+    max-width: 300px;
+    position: absolute;
+    top: 150px; /* Distância do topo aumentada para mover o card para baixo */
+    left: 50px; /* Distância da esquerda */
+}
+
+/* Estilo do botão "Novo Projeto" */
+.btn-custom {
+    background-color: #000; /* Cor de fundo preta */
+    color: #fff; /* Cor do texto branco */
+    border: none; /* Remover borda */
+    border-radius: 5px; /* Borda arredondada */
+    padding: 10px 20px; /* Espaçamento interno */
+    font-size: 13px; /* Tamanho da fonte */
+    font-weight: bold; /* Texto em negrito */
+    cursor: pointer;
+}
+
+.btn-custom:hover {
+    background-color: #333; /* Cor de fundo ao passar o mouse */
+    color: #fff;
+}
+
+/* Estilo do modal */
+.card-style {
+    background-color: #1c1c1c; /* Cor do card cinza */
+    color: #fff; /* Texto preto */
+    border-radius: 10px; /* Borda arredondada */
+    padding: 20px;
+}
+
+/* Estilo do campo de input no modal */
+#projectName {
+    background-color: #e0e0e0; /* Cor de fundo do input */
+    color: #000; /* Cor do texto */
+    border: none; /* Remover borda */
+}
+
+#projectName::placeholder {
+    color: #555; /* Cor do placeholder */
+}
+
+/* Remover bordas padrão do modal */
+.modal-header, .modal-footer {
+    border-color: gray;
+}
+
+/* Estilo do footer */
+.footer {
+    background-color: #A9A9A9; /* Cor de fundo cinza para o footer */
+    text-align: center;
+    padding: 10px;
+    margin-top: auto;
+}
+span{
+    color: white;
+}
