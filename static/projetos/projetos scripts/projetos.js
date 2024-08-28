@@ -1,31 +1,26 @@
-let projectIdToDelete = null;
+
+let deleteProjectId = null;
 
 function deleteProject(projectId) {
-    projectIdToDelete = projectId; // Salva o ID do projeto a ser excluído
-    $('#confirmModal').modal('show'); // Exibe o modal de confirmação
+    deleteProjectId = projectId;
+    $('#confirmModal').modal('show');
 }
 
 document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-    if (projectIdToDelete !== null) {
-        fetch(`/delete_project/${projectIdToDelete}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+    if (deleteProjectId) {
+        // Substitua a URL pelo endpoint de exclusão do projeto
+        fetch(`/delete_project/${deleteProjectId}`, {
+            method: 'DELETE'
         })
         .then(response => response.json())
         .then(data => {
-            if (data.message) {
-                alert(data.message); // Mostrar mensagem de sucesso
-                document.querySelector(`#project-${projectIdToDelete}`).remove(); // Remover o projeto da interface
-            } else if (data.error) {
-                alert(data.error); // Mostrar mensagem de erro
+            if (data.success) {
+                document.getElementById(`project-${deleteProjectId}`).remove();
+                $('#confirmModal').modal('hide');
+            } else {
+                alert('Erro ao excluir o projeto');
             }
         })
-        .catch(error => console.error('Error:', error))
-        .finally(() => {
-            $('#confirmModal').modal('hide'); // Oculta o modal de confirmação após a ação
-            projectIdToDelete = null; // Limpa o ID do projeto a ser excluído
-        });
+        .catch(error => console.error('Erro:', error));
     }
 });

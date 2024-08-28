@@ -1,82 +1,110 @@
-.custom-navbar-height .navbar-brand,
-.custom-navbar-height .nav-link {
-    line-height: 40px;
-}
-
-.navbar {
-    background-color: gray;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 80vh;
-}
-
-.custom-navbar-height {
-    height: 80px;
-}
-
-.custom-navbar-height .navbar-brand,
-.custom-navbar-height .nav-link {
-    line-height: 80px;
-}
-
 /* Estilo geral do fundo */
 body {
-    background-color: #1c1c1c; /* Cor de fundo escura */
+    background-color: #1c1c1c;
     margin: 0;
     padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
+
+/* Estilo do <h1> para posicionamento absoluto e centralização */
+h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    z-index: -1;
+    font-size: 3rem;
+    margin-top: 0;
+}
+
+/* Estilo da navbar */
+.navbar {
+    background-color: #808080;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+
+.main-container {
+    padding-top: 70px; /* Adiciona um padding no topo para empurrar o conteúdo para baixo */
+    flex: 1;
+    overflow-y: auto;
+}
+
 
 /* Estilo do card cinza */
 .gray-card {
-    background-color: #A9A9A9; /* Fundo cinza */
-    border-radius: 15px; /* Borda arredondada */
-    padding: 20px; /* Espaçamento interno */
-    color: #000; /* Cor do texto */
-    max-width: 300px;
+    background-color: #A9A9A9;
+    border-radius: 15px;
+    padding: 20px;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 250px;
+    box-sizing: border-box;
     margin-bottom: 20px;
 }
 
-/* Estilo do botão "Novo Projeto" */
+/* Estilo padrão dos botões */
 .btn-custom {
-    background-color: #000; /* Cor de fundo preta */
-    color: #fff; /* Cor do texto branco */
-    border: none; /* Remover borda */
-    border-radius: 5px; /* Borda arredondada */
-    padding: 10px 20px; /* Espaçamento interno */
-    font-size: 13px; /* Tamanho da fonte */
-    font-weight: bold; /* Texto em negrito */
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: bold;
     cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn-custom:last-child {
+    margin-right: 0;
 }
 
 .btn-custom:hover {
-    background-color: #333; /* Cor de fundo ao passar o mouse */
+    background-color: #333;
     color: #fff;
+}
+
+/* Estilo específico para o botão "Novo Projeto" */
+.btn-new-project {
+    background-color: #28a745;
+    width: 50%;
+}
+
+.btn-new-project:hover {
+    background-color: #218838;
+    color: white;
 }
 
 /* Estilo do modal */
 .card-style {
-    background-color: #1c1c1c; /* Cor do card cinza */
-    color: #fff; /* Texto preto */
-    border-radius: 10px; /* Borda arredondada */
+    background-color: #1c1c1c;
+    color: #fff;
+    border-radius: 10px;
     padding: 20px;
 }
 
 /* Estilo do campo de input no modal */
 #projectName {
-    background-color: #e0e0e0; /* Cor de fundo do input */
-    color: #000; /* Cor do texto */
-    border: none; /* Remover borda */
+    background-color: #e0e0e0;
+    color: #000;
+    border: none;
 }
 
 #projectName::placeholder {
-    color: #555; /* Cor do placeholder */
+    color: #555;
 }
 
 /* Remover bordas padrão do modal */
@@ -86,11 +114,41 @@ body {
 
 /* Estilo do footer */
 .footer {
-    background-color: #A9A9A9; /* Cor de fundo cinza para o footer */
+    background-color: #A9A9A9;
     text-align: center;
     padding: 10px;
     margin-top: auto;
 }
-span {
-    color: white;
+
+/* Estilo do container dos projetos */
+.project-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+/* Faz os cards ficarem do mesmo tamanho */
+.project-container .col-md-4 {
+    flex: 1 1 calc(33.333% - 10px);
+    max-width: calc(33.333% - 10px);
+}
+
+/* Container para os botões */
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: auto;
+}
+
+/* Estilo específico para o botão de fechar no modal */
+.close {
+    color: #fff;
+    opacity: 1;
+}
+
+.close:hover {
+    color: #555;
+    opacity: 1;
 }

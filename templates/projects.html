@@ -9,6 +9,43 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/projetos/projetos styles/projetos.css">
+    <style>
+        /* Estilo específico para o botão "Novo Projeto" */
+        .btn-new-project {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-new-project:hover {
+            background-color: #218838;
+        }
+
+        /* Estilo do botão de fechar no modal */
+        .close {
+            color: #000;
+            opacity: 1;
+        }
+
+        .close:hover {
+            color: #555;
+            opacity: 1;
+        }
+
+        /* Ajusta o padding superior do container principal para descer o conteúdo */
+        .container {
+            padding-top: 70px; /* Ajuste conforme a altura da navbar */
+        }
+
+        /* Adiciona um ajuste para a navbar e para garantir que o conteúdo não se sobreponha */
+        .navbar {
+            background-color: #808080;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,15 +53,12 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-grey custom-navbar-height">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">IA Testing</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('projects') }}">Projects</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -32,54 +66,55 @@
 
     <div class="container text-center">
         <h1 class="mt-5 text-white">IA Testing</h1>
-        <div class="row justify-content-center">
-            <!-- Card existente -->
-            <div class="col-md-4">
+        <div class="row project-container">
+            <!-- Existing Card -->
+            <div class="col-md-4 col-lg-3">
                 <div class="gray-card mt-4 p-4">
-                    <h2>Projeto 1</h2>
-                    <p>Crie e gerencie seus projetos facilmente.</p>
-                    <button class="btn btn-custom" data-toggle="modal" data-target="#projectModal">Novo Projeto</button>
+                    <h2>Project 1</h2>
+                    <p>Create and manage your projects easily.</p>
+                    <div class="button-container">
+                        <button class="btn btn-new-project" data-toggle="modal" data-target="#projectModal">New Project</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Renderizar dinamicamente os projetos -->
+            <!-- Dynamically Rendered Projects -->
             {% for project in projects %}
-            <div class="col-md-4" id="project-{{ project.id }}">
+            <div class="col-md-4 col-lg-3" id="project-{{ project.id }}">
                 <div class="gray-card mt-4 p-4">
                     <h2>{{ project.name }}</h2>
-                    <p>Visualize seu projeto e gerencie seus testes</p>
-                    <!-- Botão de exclusão com JavaScript -->
-                    <button class="btn btn-danger" onclick="deleteProject({{ project.id }})">Deletar</button>
-                    <!-- Link para visualizar o projeto -->
-                    <a href="{{ url_for('view_project', project_id=project.id) }}" class="btn btn-custom">Visualizar</a>
+                    <p>View your project and manage your tests</p>
+                    <div class="button-container">
+                        <button class="btn btn-danger" onclick="deleteProject({{ project.id }})">Delete</button>
+                        <a href="{{ url_for('view_project', project_id=project.id) }}" class="btn btn-custom">View</a>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
 
-    <!-- Modal de criação -->
+    <!-- Creation Modal -->
     <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content card-style">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title" id="projectModalLabel">Novo Projeto</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="projectModalLabel">New Project</h5>
                     <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Campo de nome do projeto -->
                     <form action="{{ url_for('save_project') }}" method="post">
                         <div class="form-group">
-                            <label for="projectName">Nome do Projeto</label>
+                            <label for="projectName">Project Name</label>
                             <input type="text" class="form-control bg-light text-dark border-0" id="projectName"
-                                name="name" placeholder="Insira o nome do projeto" required>
+                                name="name" placeholder="Enter project name" required>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </div>
@@ -90,23 +125,23 @@
         </div>
     </div>
 
-    <!-- Modal de confirmação de exclusão -->
+    <!-- Deletion Confirmation Modal -->
     <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content card-style">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirmação de Exclusão</h5>
+                    <h5 class="modal-title" id="confirmModalLabel">Deletion Confirmation</h5>
                     <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Tem certeza de que deseja excluir este projeto?</p>
+                    <p>Are you sure you want to delete this project?</p>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
                 </div>
             </div>
         </div>
