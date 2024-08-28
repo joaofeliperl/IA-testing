@@ -5,22 +5,14 @@
     <title>IA Testing</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="../static/authentication/images/icons/favicon.ico" />
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="../static/authentication/vendor/bootstrap/css/bootstrap.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="../static/authentication/vendor/animate/animate.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="../static/authentication/vendor/css-hamburgers/hamburgers.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="../static/authentication/vendor/select2/select2.min.css">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="../static/authentication/authentication styles/util.css">
     <link rel="stylesheet" type="text/css" href="../static/authentication/authentication styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!--===============================================================================================-->
-
 </head>
 
 <body>
@@ -28,17 +20,35 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
+
+                <!-- Exibição de mensagens de flash -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="alert-container">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
                 <div class="login100-pic js-tilt" data-tilt>
                     <img src="../static/authentication/images/bug.png" alt="IMG">
                 </div>
 
-                <form class="login100-form validate-form">
+                <!-- Formulário de login -->
+                <form class="login100-form validate-form" action="{{ url_for('login') }}" method="POST">
                     <span class="login100-form-title">
                         Login
                     </span>
 
                     <div class="wrap-input100 validate-input" data-validate="Email is required">
-                        <input class="input100" type="email" name="email" placeholder="Email">
+                        <input class="input100" type="email" name="email" placeholder="Email" required>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-user" aria-hidden="true"></i>
@@ -46,7 +56,7 @@
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <input id="password-field" class="input100" type="password" name="pass" placeholder="Password">
+                        <input id="password-field" class="input100" type="password" name="pass" placeholder="Password" required>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-lock" aria-hidden="true"></i>
@@ -56,9 +66,8 @@
                         </button>
                     </div>
 
-
                     <div class="container-login100-form-btn">
-                        <button class="login100-form-btn">
+                        <button class="login100-form-btn" type="submit">
                             Login
                         </button>
                     </div>
@@ -83,26 +92,18 @@
         </div>
     </div>
 
-
-
-
-    <!--===============================================================================================-->
     <script src="../static/authentication/vendor/jquery/jquery-3.2.1.min.js"></script>
-    <!--===============================================================================================-->
     <script src="../static/authentication/vendor/bootstrap/js/popper.js"></script>
     <script src="../static/authentication/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!--===============================================================================================-->
     <script src="../static/authentication/vendor/select2/select2.min.js"></script>
-    <!--===============================================================================================-->
     <script src="../static/authentication/vendor/tilt/tilt.jquery.min.js"></script>
     <script>
         $('.js-tilt').tilt({
             scale: 1.1
         })
     </script>
-    <!--===============================================================================================-->
     <script src="../static/authentication/authentication js/sigin.js"></script>
-
+    <script src="../static/authentication/authentication js/auth.js"></script>
 </body>
 
 </html>

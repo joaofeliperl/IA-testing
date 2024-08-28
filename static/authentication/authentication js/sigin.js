@@ -85,3 +85,15 @@ document.getElementById('toggle-confirm-password').addEventListener('click', fun
         confirmPasswordIcon.classList.add('fa-eye');
     }
 });
+
+
+    document.querySelector('.login100-form-btn').addEventListener('click', function(event) {
+        const password = document.getElementById('password-field').value;
+        const confirmPassword = document.getElementById('confirm-password-field').value;
+
+        if (password !== confirmPassword) {
+            event.preventDefault(); // Evita o envio do formulário
+            alert('Passwords do not match!');
+        }
+    });
+

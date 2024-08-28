@@ -40,9 +40,7 @@ body {
     padding: 20px; /* Espaçamento interno */
     color: #000; /* Cor do texto */
     max-width: 300px;
-    position: absolute;
-    top: 150px; /* Distância do topo aumentada para mover o card para baixo */
-    left: 50px; /* Distância da esquerda */
+    margin-bottom: 20px;
 }
 
 /* Estilo do botão "Novo Projeto" */
@@ -93,6 +91,6 @@ body {
     padding: 10px;
     margin-top: auto;
 }
-span{
+span {
     color: white;
 }

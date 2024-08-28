@@ -25,9 +25,6 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ url_for('projects') }}">Projects</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">View Tests</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -35,16 +32,33 @@
 
     <div class="container text-center">
         <h1 class="mt-5 text-white">IA Testing</h1>
-        <!-- Card Cinza -->
-        <div class="gray-card mt-4 p-4">
-            <h2>Projetos</h2>
-            <p>Crie e gerencie seus projetos facilmente.</p>
-            <!-- Botão para adicionar novo projeto -->
-            <button class="btn btn-custom" id="openModal">Novo Projeto</button>
+        <div class="row justify-content-center">
+            <!-- Card existente -->
+            <div class="col-md-4">
+                <div class="gray-card mt-4 p-4">
+                    <h2>Projeto 1</h2>
+                    <p>Crie e gerencie seus projetos facilmente.</p>
+                    <button class="btn btn-custom" data-toggle="modal" data-target="#projectModal">Novo Projeto</button>
+                </div>
+            </div>
+
+            <!-- Renderizar dinamicamente os projetos -->
+            {% for project in projects %}
+            <div class="col-md-4" id="project-{{ project.id }}">
+                <div class="gray-card mt-4 p-4">
+                    <h2>{{ project.name }}</h2>
+                    <p>Visualize seu projeto e gerencie seus testes</p>
+                    <!-- Botão de exclusão com JavaScript -->
+                    <button class="btn btn-danger" onclick="deleteProject({{ project.id }})">Deletar</button>
+                    <!-- Link para visualizar o projeto -->
+                    <a href="{{ url_for('view_project', project_id=project.id) }}" class="btn btn-custom">Visualizar</a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal de criação -->
     <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -57,17 +71,42 @@
                 </div>
                 <div class="modal-body">
                     <!-- Campo de nome do projeto -->
-                    <form>
+                    <form action="{{ url_for('save_project') }}" method="post">
                         <div class="form-group">
                             <label for="projectName">Nome do Projeto</label>
                             <input type="text" class="form-control bg-light text-dark border-0" id="projectName"
-                                placeholder="Insira o nome do projeto">
+                                name="name" placeholder="Insira o nome do projeto" required>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer border-0">
+                    <!-- Footer left empty for alignment purposes -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content card-style">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmação de Exclusão</h5>
+                    <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza de que deseja excluir este projeto?</p>
+                </div>
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
                 </div>
             </div>
         </div>
