@@ -52,7 +52,12 @@ python --version
 
     python app.py
 
+### 5. ** Execute para pausar o treinamento da IA:**
+    crtl + c
 
-### 5. **Acesse a aplicação:**
+### 6. ** Execute para continuar o treinamento da IA:**
+    python models/test_case_model.py
+
+### 7. **Acesse a aplicação:**
 
     Abra o navegador e vá para http://127.0.0.1:5000/ para acessar a aplicação.
