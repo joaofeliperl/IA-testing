@@ -1,55 +1,88 @@
 import torch
+import signal  # Para capturar SIGINT
+import sys  # Para encerrar o script de forma limpa
 from torch.utils.data import DataLoader
 from torchvision.models.detection import FasterRCNN, fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.datasets import VOCDetection
 from torchvision.transforms import ToTensor
+import os
 
-# Custom transform for images
+# Flag to track interruption
+interrupted = False
+
+# Handler para capturar o Ctrl + C e salvar o checkpoint antes de encerrar
+def signal_handler(sig, frame):
+    global interrupted
+    print("\nInterrupção detectada. Salvando checkpoint e encerrando...")
+    interrupted = True
+
+# Registrar o handler para SIGINT
+signal.signal(signal.SIGINT, signal_handler)
+
+# Custom transform para imagens
 class CustomTransform:
     def __call__(self, img):
-        return ToTensor()(img)  # Convert image to tensor
+        return ToTensor()(img)
 
-# Custom transform for targets (annotations)
+# Custom transform para alvos (anotações)
 class CustomTargetTransform:
     def __call__(self, target):
-        return transform_target(target)  # Transform the target using the transform_target function
+        return transform_target(target)
 
-# Function to transform target annotations
 def transform_target(target):
-    boxes = []  # List to store bounding boxes
-    labels = []  # List to store corresponding classes
+    boxes = []
+    labels = []
     for obj in target['annotation']['object']:
         bbox = obj['bndbox']
         boxes.append([int(bbox['xmin']), int(bbox['ymin']), int(bbox['xmax']), int(bbox['ymax'])])
-        labels.append(1)  # Assuming all boxes belong to the same class (1)
+        labels.append(1)
 
     boxes = torch.tensor(boxes, dtype=torch.float32)
     labels = torch.tensor(labels, dtype=torch.int64)
     return {'boxes': boxes, 'labels': labels}
 
-# Function to save checkpoints
-def save_checkpoint(epoch, model, optimizer, loss, file_name="checkpoint.pth.tar"):
+def save_checkpoint(epoch, model, optimizer, loss, folder_name="checkpoints", file_name="checkpoint.pth.tar"):
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+    full_path = os.path.join(folder_name, file_name)
+
     checkpoint = {
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': loss,
     }
-    torch.save(checkpoint, file_name)
-    print(f"Checkpoint saved at epoch {epoch + 1}")
+    torch.save(checkpoint, full_path)
+    print(f"Checkpoint salvo no epoch {epoch + 1} em {full_path}")
 
-# Function to load checkpoints
-def load_checkpoint(file_name, model, optimizer):
-    checkpoint = torch.load(file_name)
-    model.load_state_dict(checkpoint['model_state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    epoch = checkpoint['epoch']
-    loss = checkpoint['loss']
-    print(f"Checkpoint loaded, resuming from epoch {epoch + 1}")
-    return epoch, loss
+def load_latest_checkpoint(folder_name, model, optimizer):
+    if not os.path.exists(folder_name):
+        print(f"Nenhum diretório encontrado: {folder_name}, iniciando do zero.")
+        return 0, None
 
-# Function to evaluate the model
+    checkpoint_files = [f for f in os.listdir(folder_name) if f.startswith("checkpoint") and f.endswith(".pth.tar")]
+    if len(checkpoint_files) == 0:
+        print(f"Nenhum arquivo de checkpoint encontrado em {folder_name}, iniciando do zero.")
+        return 0, None
+
+    checkpoint_files.sort(key=lambda x: int(x.split('_')[-1].split('.')[0]))
+    latest_checkpoint = checkpoint_files[-1]
+    full_path = os.path.join(folder_name, latest_checkpoint)
+
+    try:
+        checkpoint = torch.load(full_path)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch']
+        loss = checkpoint['loss']
+        print(f"Checkpoint carregado: {latest_checkpoint}, continuando a partir do epoch {epoch + 1}")
+        return epoch + 1, loss
+    except FileNotFoundError:
+        print(f"Checkpoint não encontrado em {full_path}, iniciando do zero.")
+        return 0, None
+
 def evaluate_model(model, data_loader):
     model.eval()
     total_loss = 0
@@ -64,9 +97,10 @@ def evaluate_model(model, data_loader):
     print(f"Validation Loss: {average_loss:.4f}")
     return average_loss
 
-# Function to train the model
-def train_model(model, optimizer, lr_scheduler, num_epochs, train_loader, val_loader, start_epoch=0):
+def train_model(model, optimizer, lr_scheduler, num_epochs, train_loader, val_loader, start_epoch=0, save_every_n_batches=10):
+    global interrupted
     for epoch in range(start_epoch, num_epochs):
+        print(f"Iniciando Epoch: {epoch + 1}")
         model.train()
         epoch_loss = 0
         for i, (images, targets) in enumerate(train_loader):
@@ -79,18 +113,21 @@ def train_model(model, optimizer, lr_scheduler, num_epochs, train_loader, val_lo
             losses.backward()
             optimizer.step()
 
-            if (i + 1) % 10 == 0:
+            if (i + 1) % save_every_n_batches == 0:
                 print(f"Epoch [{epoch + 1}/{num_epochs}], Batch [{i + 1}], Loss: {losses.item()}")
+                save_checkpoint(epoch, model, optimizer, losses.item(), file_name=f"checkpoint_batch_{i+1}.pth.tar")
 
             epoch_loss += losses.item()
-        
+
+            # Verificar se houve interrupção
+            if interrupted:
+                print(f"Treinamento interrompido no batch {i + 1} do epoch {epoch + 1}.")
+                save_checkpoint(epoch, model, optimizer, epoch_loss)
+                sys.exit(0)
+
         lr_scheduler.step()
-        print(f"Epoch [{epoch + 1}/{num_epochs}] completed. Average Training Loss: {epoch_loss / len(train_loader)}")
-
-        # Save checkpoint
+        print(f"Epoch [{epoch + 1}/{num_epochs}] completado. Loss média: {epoch_loss / len(train_loader)}")
         save_checkpoint(epoch, model, optimizer, epoch_loss)
-
-        # Evaluate the model on the validation set
         evaluate_model(model, val_loader)
 
     torch.save(model.state_dict(), 'fasterrcnn_model.pth')
@@ -99,38 +136,34 @@ if __name__ == "__main__":
     img_transform = CustomTransform()
     target_transform = CustomTargetTransform()
 
-    # Load datasets
-    train_dataset = VOCDetection(root='./data/VOCdevkit/VOC2012', download=True, transform=img_transform)
-    val_dataset = VOCDetection(root='./data/VOCdevkit/VOC2012', download=True, transform=img_transform)
+    # Carregar datasets
+    train_dataset = VOCDetection(root='./data/VOCdevkit/VOC2012', download=False, transform=img_transform)
+    val_dataset = VOCDetection(root='./data/VOCdevkit/VOC2012', download=False, transform=img_transform)
 
-    # Custom collate function
+    # Função de collate personalizada
     def custom_collate_fn(batch):
         images, targets = zip(*batch)
         images = list(img for img in images)
         targets = [target_transform(target) for target in targets]
         return images, targets
 
-    # Create data loaders
+    # Criar data loaders
     train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True, collate_fn=custom_collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=2, shuffle=False, collate_fn=custom_collate_fn)
 
-    # Load the pre-trained Faster R-CNN model
+    # Carregar o modelo pretreinado Faster R-CNN
     backbone = fasterrcnn_resnet50_fpn(weights='DEFAULT').backbone
     model = FasterRCNN(backbone, num_classes=2)
 
-    # Modify the classifier head (if necessary)
+    # Modificar a cabeça do classificador (se necessário)
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes=2)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=0.005, momentum=0.9, weight_decay=0.0005)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
 
-    # Load checkpoint if available
-    start_epoch = 0
-    try:
-        start_epoch, _ = load_checkpoint("checkpoint.pth.tar", model, optimizer)
-    except FileNotFoundError:
-        print("No checkpoint found, starting from scratch.")
+    # Carregar o último checkpoint, se disponível
+    start_epoch, _ = load_latest_checkpoint(folder_name="checkpoints", model=model, optimizer=optimizer)
 
-    # Train the model
+    # Treinar o modelo
     train_model(model, optimizer, lr_scheduler, num_epochs=10, train_loader=train_loader, val_loader=val_loader, start_epoch=start_epoch)

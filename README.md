@@ -29,14 +29,17 @@ python --version
    Clone o repositório do projeto para o seu ambiente local:
 
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+   git clone https://github.com/joaofeliperl/IA-testing.git
+   cd ia-testing
 ```
 
 ### 2. **Crie um ambiente virtual [opcional, mas recomendado]**
 
     python -m venv venv
-    source venv/bin/activate  # No Windows use `venv\Scripts\activate`
+    # No linux use 
+    source venv/bin/activate  
+    # No Windows use 
+    `venv\Scripts\activate`
 
 
 ### 3. **Execute o script de setup:**

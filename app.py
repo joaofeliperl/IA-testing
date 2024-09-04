@@ -5,11 +5,13 @@ import logging
 from flask_migrate import Migrate
 import pymysql
 from utils.image_preprocessing import extract_text_from_image, detect_objects
-import torch
-
-# Importar funções da IA
 from ai_processing import process_image, generate_test_cases
 from utils.model_utils import load_custom_model
+import os
+from functools import wraps
+
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="torch")
 
 # Configuração do logging
 logging.basicConfig(level=logging.DEBUG)
@@ -28,23 +30,34 @@ cursor.close()
 connection.close()
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Necessário para usar sessões
+app.secret_key = 'supersecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-model_path = 'utils/model_utils.py'
-num_classes = 2 
+# Corrigir caminho do checkpoint do modelo
+model_path = 'checkpoints/checkpoint_batch_70.pth.tar'
+num_classes = 2
 model = load_custom_model(model_path, num_classes)
 
+# Função para verificar se o usuário está logado
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Modelos
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     role = db.Column(db.String(50), nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False) 
+    password_hash = db.Column(db.String(255), nullable=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -100,7 +113,7 @@ def signup():
 def login():
     email = request.form.get('email')
     password = request.form.get('pass')
-    
+
     user = User.query.filter_by(email=email).first()
 
     if user and user.check_password(password):
@@ -114,31 +127,25 @@ def login():
 
 @app.route('/logout')
 def logout():
-    # Remove o ID do usuário da sessão
     session.pop('user_id', None)
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
 @app.route('/home')
+@login_required
 def home():
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
     return render_template('home.html')
 
 @app.route('/projects')
+@login_required
 def projects():
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
-
     user_id = session['user_id']
     projects = Project.query.filter_by(user_id=user_id).limit(10).all()
     return render_template('projects.html', projects=projects)
 
 @app.route('/save_project', methods=['POST'])
+@login_required
 def save_project():
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
-
     project_name = request.form.get('name')
     if not project_name:
         return jsonify({"error": "Project name is required"}), 400
@@ -150,12 +157,9 @@ def save_project():
 
     return redirect(url_for('projects'))
 
-
 @app.route('/view_project/<int:project_id>')
+@login_required
 def view_project(project_id):
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
-
     project = Project.query.get(project_id)
     if project is None or project.user_id != session['user_id']:
         return jsonify({"error": "Project not found or unauthorized access"}), 404
@@ -163,10 +167,8 @@ def view_project(project_id):
     return render_template('home.html', project=project)
 
 @app.route('/delete_project/<int:project_id>', methods=['POST'])
+@login_required
 def delete_project(project_id):
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
-
     project = Project.query.get(project_id)
     if project is None or project.user_id != session['user_id']:
         return jsonify({"error": "Project not found or unauthorized access"}), 404
@@ -176,35 +178,28 @@ def delete_project(project_id):
 
     return jsonify({'message': 'Project deleted successfully!'})
 
-
-
 @app.route('/formtests')
+@login_required
 def formtests():
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
     return render_template('form-tests.html')
-
 
 @app.route('/create_tables')
 def create_tables():
     db.create_all()
     return "Tables created!"
 
-
-
 @app.route('/generate', methods=['POST'])
+@login_required
 def generate():
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
-
     if 'screenshot' not in request.files or 'description' not in request.form:
-        return jsonify({"error": "Missing screenshot or description"}), 400
+        flash("Missing screenshot or description", "danger")
+        return redirect(url_for('formtests'))
 
     screenshot = request.files['screenshot']
     description = request.form['description']
 
     # Processar a imagem
-    image_path = save_image(screenshot)  # Função para salvar a imagem temporariamente
+    image_path = save_image(screenshot)
     text = extract_text_from_image(image_path)
     boxes, labels, scores = detect_objects(image_path)
 
@@ -212,15 +207,26 @@ def generate():
     processed_image = text  # Ou use `boxes`, `labels`, `scores` conforme necessário
     test_cases = generate_test_cases(processed_image, description)
 
-    return jsonify({"test_cases": test_cases})
+    return render_template('test_results.html', test_cases=test_cases)
+
+# Ajustar o caminho para a pasta 'uploads'
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def save_image(file):
-    image_path = f"/tmp/{file.filename}"
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(image_path)
     return image_path
 
-
-
-
 if __name__ == '__main__':
+    # Verificar se o modelo foi carregado corretamente
+    if model:
+        print("Modelo carregado com sucesso!")
+    else:
+        print("Erro ao carregar o modelo.")
+
+    # Iniciar a aplicação Flask
     app.run(debug=True)
