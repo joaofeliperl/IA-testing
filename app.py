@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG)
 db_name = 'iatesting'
 db_user = 'root'
 db_password = 'root'
-db_host = 'localhost'
+db_host = '192.168.15.35'
 
 # Criar o banco de dados se ele não existir
 connection = pymysql.connect(host=db_host, user=db_user, password=db_password)
@@ -228,5 +228,5 @@ if __name__ == '__main__':
     else:
         print("Erro ao carregar o modelo.")
 
-    # Iniciar a aplicação Flask
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
