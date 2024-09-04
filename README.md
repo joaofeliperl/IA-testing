@@ -14,13 +14,14 @@ O **Test Case Generator** foi criado para ajudar profissionais de QA (Quality As
 
 ## Como Rodar o Projeto Localmente
 
-### Pré-requisitos
+### Usando Docker (Recomendado)
 
-Certifique-se de ter o Python 3.x instalado em sua máquina. Você pode verificar se o Python está instalado executando:
+#### Pré-requisitos
+
+Certifique-se de ter o Docker instalado em sua máquina. Você pode verificar se o Docker está instalado executando:
 
 ```bash
-python --version
-```
+docker --version
 
 ## Passos para Configuração
 
@@ -33,34 +34,15 @@ python --version
    cd ia-testing
 ```
 
-### 2. **Crie um ambiente virtual [opcional, mas recomendado]**
+### 2. **Build da Imagem Docker:**
 
-    python -m venv venv
-    # No linux use 
-    source venv/bin/activate  
-    # No Windows use 
-    `venv\Scripts\activate`
+    docker build -t iatesting .
 
 
-### 3. **Execute o script de setup:**
-    ./setup.sh
+### 3. **Execute o container:**
+    docker run -p 5000:5000 iatesting
 
 
-### Case enfrente problemas de permissão, você pode tornar o script executável com:
-    chmod +x setup.sh
-    ./setup.sh
-
-
-### 4. **Execute a aplicação:**
-
-    python app.py
-
-### 5. ** Execute para pausar o treinamento da IA:**
-    crtl + c
-
-### 6. ** Execute para continuar o treinamento da IA:**
-    python models/test_case_model.py
-
-### 7. **Acesse a aplicação:**
+### 4. **Acesse a aplicação:**
 
     Abra o navegador e vá para http://127.0.0.1:5000/ para acessar a aplicação.
