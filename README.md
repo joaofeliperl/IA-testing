@@ -39,9 +39,13 @@ python --version
     source venv/bin/activate  # No Windows use `venv\Scripts\activate`
 
 
-### 3. **Instale as dependências:**
+### 3. **Execute o script de setup:**
+    ./setup.sh
 
-    pip install -r requirements.txt
+
+### Case enfrente problemas de permissão, você pode tornar o script executável com:
+    chmod +x setup.sh
+    ./setup.sh
 
 
 ### 4. **Execute a aplicação:**

@@ -3,17 +3,41 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 from flask_migrate import Migrate
+import pymysql
+from utils.image_preprocessing import extract_text_from_image, detect_objects
+import torch
+
+# Importar funções da IA
+from ai_processing import process_image, generate_test_cases
+from utils.model_utils import load_custom_model
 
 # Configuração do logging
 logging.basicConfig(level=logging.DEBUG)
 
+# Configuração do banco de dados
+db_name = 'iatesting'
+db_user = 'root'
+db_password = 'root'
+db_host = 'localhost'
+
+# Criar o banco de dados se ele não existir
+connection = pymysql.connect(host=db_host, user=db_user, password=db_password)
+cursor = connection.cursor()
+cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
+cursor.close()
+connection.close()
+
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Necessário para usar sessões
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/iatesting'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+model_path = 'utils/model_utils.py'
+num_classes = 2 
+model = load_custom_model(model_path, num_classes)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -133,11 +157,10 @@ def view_project(project_id):
         return redirect(url_for('index'))
 
     project = Project.query.get(project_id)
-    if project is None:
-        return jsonify({"error": "Project not found"}), 404
+    if project is None or project.user_id != session['user_id']:
+        return jsonify({"error": "Project not found or unauthorized access"}), 404
 
     return render_template('home.html', project=project)
-
 
 @app.route('/delete_project/<int:project_id>', methods=['POST'])
 def delete_project(project_id):
@@ -145,13 +168,14 @@ def delete_project(project_id):
         return redirect(url_for('index'))
 
     project = Project.query.get(project_id)
-    if project is None:
-        return jsonify({"error": "Project not found"}), 404
+    if project is None or project.user_id != session['user_id']:
+        return jsonify({"error": "Project not found or unauthorized access"}), 404
 
     db.session.delete(project)
     db.session.commit()
 
     return jsonify({'message': 'Project deleted successfully!'})
+
 
 
 @app.route('/formtests')
@@ -160,13 +184,13 @@ def formtests():
         return redirect(url_for('index'))
     return render_template('form-tests.html')
 
-def process_image(screenshot):
-    # Dummy image processing
-    return "processed_image"
 
-def generate_test_cases(processed_image, description):
-    # Dummy test case generation
-    return ["test_case_1", "test_case_2"]
+@app.route('/create_tables')
+def create_tables():
+    db.create_all()
+    return "Tables created!"
+
+
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -179,17 +203,24 @@ def generate():
     screenshot = request.files['screenshot']
     description = request.form['description']
 
-    # Process the screenshot and description
-    processed_image = process_image(screenshot)
+    # Processar a imagem
+    image_path = save_image(screenshot)  # Função para salvar a imagem temporariamente
+    text = extract_text_from_image(image_path)
+    boxes, labels, scores = detect_objects(image_path)
+
+    # Gerar casos de teste baseados na imagem processada e descrição
+    processed_image = text  # Ou use `boxes`, `labels`, `scores` conforme necessário
     test_cases = generate_test_cases(processed_image, description)
 
     return jsonify({"test_cases": test_cases})
 
+def save_image(file):
+    image_path = f"/tmp/{file.filename}"
+    file.save(image_path)
+    return image_path
 
-@app.route('/create_tables')
-def create_tables():
-    db.create_all()
-    return "Tables created!"
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
