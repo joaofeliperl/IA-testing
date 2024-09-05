@@ -71,6 +71,20 @@ class Project(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('projects', lazy=True))
 
+class TestCase(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(500), nullable=False)
+    expected_result = db.Column(db.String(500), nullable=False)
+    image_text = db.Column(db.Text, nullable=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project = db.relationship('Project', backref=db.backref('test_cases', lazy=True))
+
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    file_path = db.Column(db.String(255), nullable=False)
+    test_case_id = db.Column(db.Integer, db.ForeignKey('test_case.id'), nullable=False)
+    test_case = db.relationship('TestCase', backref=db.backref('images', lazy=True))
+
 
 @app.route('/')
 def index():
@@ -188,35 +202,82 @@ def create_tables():
     db.create_all()
     return "Tables created!"
 
+def generate_test_cases(processed_image, description, quantity=1):
+    # Garantir que description e processed_image sejam strings
+    description_str = str(description).title() if description else "Descrição inválida"
+    processed_image_str = str(processed_image) if processed_image else "Texto da imagem não extraído corretamente."
+
+    print(f"[DEBUG] description_str após conversão: {description_str}")
+    print(f"[DEBUG] processed_image_str após conversão: {processed_image_str}")
+
+    test_cases = []
+    for i in range(1, int(quantity) + 1):
+        test_case_1 = f"Test Case {i}: Validar que o campo '{description_str}' é exibido corretamente na interface."
+        test_case_2 = f"Test Case {i}: Verificar que a imagem processada contém o texto: '{processed_image_str}'."
+        test_cases.append({"case": test_case_1, "expected_result": test_case_2})
+        print(f"[DEBUG] Test cases gerados para o loop {i}: {test_case_1}, {test_case_2}")
+
+    return test_cases
+
+
+
 @app.route('/generate', methods=['POST'])
 @login_required
 def generate():
-    if 'screenshot' not in request.files or 'description' not in request.form:
-        flash("Missing screenshot or description", "danger")
+    if 'screenshot' not in request.files or 'description' not in request.form or 'feature' not in request.form:
+        flash("Missing required fields", "danger")
+        print("[DEBUG] Campos obrigatórios ausentes.")
         return redirect(url_for('formtests'))
 
     screenshot = request.files['screenshot']
     description = request.form['description']
+    feature = request.form['feature']
+    test_quantity = request.form.get('test_quantity', 1)  # Valor padrão de 1 teste, se não fornecido
+    test_type = request.form.get('test_type', 'testcase')  # Valor padrão 'testcase' se não fornecido
+
+    print(f"[DEBUG] Dados recebidos no form: screenshot={screenshot.filename}, description={description}, feature={feature}, test_quantity={test_quantity}, test_type={test_type}")
 
     # Processar a imagem
     image_path = save_image(screenshot)
+    print(f"[DEBUG] Caminho da imagem salva: {image_path}")
+
     text = extract_text_from_image(image_path)
-    boxes, labels, scores = detect_objects(image_path)
+    print(f"[DEBUG] Texto extraído da imagem: {text}")
 
-    # Gerar casos de teste baseados na imagem processada e descrição
-    processed_image = text  # Ou use `boxes`, `labels`, `scores` conforme necessário
-    test_cases = generate_test_cases(processed_image, description)
+    # Verificar se o texto extraído é válido
+    processed_image = str(text) if isinstance(text, str) else "Texto não extraído corretamente."
+    print(f"[DEBUG] Texto processado da imagem: {processed_image}")
 
-    return render_template('test_results.html', test_cases=test_cases)
+    # Exibir valores para depuração
+    print(f"[DEBUG] Processed Image: {processed_image}")
+    print(f"[DEBUG] Description: {description}")
+    print(f"[DEBUG] Feature: {feature}")
+    print(f"[DEBUG] Test Quantity: {test_quantity}")
+    print(f"[DEBUG] Test Type: {test_type}")
+
+    # Gerar casos de teste e garantir que estão corretos
+    test_cases = generate_test_cases(processed_image, description, test_quantity)
+
+    # Exibir os casos de teste para debug
+    print(f"[DEBUG] Test Cases: {test_cases}")
+
+    # Retornar os casos de teste na template 'test-results.html'
+    return render_template('test-results.html', test_cases=test_cases)
+
+
+
+
+
 
 # Ajustar o caminho para a pasta 'uploads'
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def save_image(file):
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        os.makedirs(app.config['UPLOAD_FOLDER'])
+# Criar pasta 'uploads' se não existir
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
+def save_image(file):
     image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(image_path)
     return image_path
@@ -229,4 +290,3 @@ if __name__ == '__main__':
         print("Erro ao carregar o modelo.")
 
     app.run(host="0.0.0.0", port=5000, debug=True)
-

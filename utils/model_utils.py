@@ -68,4 +68,3 @@ def check_checkpoints(folder_name="checkpoints"):
             print(f"{checkpoint_file}: Corrompido - Erro de Unpickling ({e})")
         except Exception as e:
             print(f"{checkpoint_file}: Corrompido - {e}")
-
