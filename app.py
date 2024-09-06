@@ -175,11 +175,18 @@ def save_project():
 @login_required
 def view_suites():
     user_id = session['user_id']
-    # Alterar para buscar as suítes relacionadas ao projeto correto
-    suites = TestSuite.query.filter_by(project_id=1).all()  # Filtra por projeto_id, você pode ajustar isso para projetos dinâmicos
-    if not suites:
-        flash("No test suites found for this project.", "warning")
-    return render_template('view-suites.html', suites=suites)
+    projects = Project.query.filter_by(user_id=user_id).all()
+    if projects:
+        project_id = projects[0].id
+        suites = TestSuite.query.filter_by(project_id=project_id).all()
+        suite_count = len(suites)
+        max_suites = 9
+        disable_create_suite = suite_count >= max_suites
+        return render_template('view-suites.html', suites=suites, disable_create_suite=disable_create_suite)
+    else:
+        return render_template('view-suites.html', suites=[], disable_create_suite=True)
+
+
 
 
 @app.route('/delete_project/<int:project_id>', methods=['POST'])
@@ -267,7 +274,7 @@ def view_suite(suite_id):
         return redirect(url_for('view_suites'))
 
     test_cases = suite.test_cases
-    return render_template('view_suite.html', suite=suite, test_cases=test_cases)
+    return render_template('test-results.html', suite=suite, test_cases=test_cases)
 
 @app.route('/delete_suite/<int:suite_id>', methods=['POST'])
 @login_required

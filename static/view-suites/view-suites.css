@@ -3,6 +3,9 @@ body {
     background-color: #1c1f26;
     color: #f0f0f0;
     font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .navbar {
@@ -13,36 +16,39 @@ h1 {
     color: #ffffff;
     font-size: 2rem;
     margin-bottom: 30px;
-    text-align: center;
 }
 
 /* Estilo dos cartões das suítes de teste */
 .gray-card {
-    background-color: #343a40;
+    background-color: #292b33;
     border-radius: 10px;
     padding: 20px;
     color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.gray-card:hover {
+    transform: scale(1.05);
 }
 
 .project-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: bold;
 }
 
 .button-container {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
     justify-content: space-between;
 }
 
-/* Estilo dos botões */
 .btn-primary {
     background-color: #007bff;
     border: none;
     color: white;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 8px 20px;
+    font-size: 14px;
     border-radius: 5px;
 }
 
@@ -54,8 +60,8 @@ h1 {
     background-color: #dc3545;
     border: none;
     color: white;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 8px 20px;
+    font-size: 14px;
     border-radius: 5px;
 }
 
@@ -63,21 +69,56 @@ h1 {
     background-color: #c82333;
 }
 
-/* Footer */
+/* Estilo do card de criação de nova suíte */
+.highlight-card {
+    background-color: #28a745;
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.highlight-card h2 {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-new-suite {
+    background-color: #218838;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.btn-new-suite:hover {
+    background-color: #1e7e34;
+}
+
+.btn-new-suite[disabled] {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.highlight-card .btn-new-suite[disabled]:hover {
+    background-color: #888;
+}
+
+/* Footer fixo */
 .footer {
     background-color: #343a40;
     text-align: center;
     padding: 10px;
     color: #fff;
     width: 100%;
-    position: relative;
-    bottom: 0;
-    left: 0;
+    margin-top: auto;
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .gray-card {
+
+    .gray-card,
+    .highlight-card {
         margin-bottom: 20px;
     }
 
