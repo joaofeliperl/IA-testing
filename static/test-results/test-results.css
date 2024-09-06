@@ -1,0 +1,23 @@
+/* Estilo dos cartões de casos de teste */
+.gray-card {
+    background-color: #343a40;
+    border-radius: 10px;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.project-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.footer {
+    background-color: #343a40;
+    text-align: center;
+    padding: 10px;
+    color: #fff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}

@@ -4,8 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 from flask_migrate import Migrate
 import pymysql
-from utils.image_preprocessing import extract_text_from_image, detect_objects
-from ai_processing import process_image, generate_test_cases
+from utils.image_preprocessing import extract_text_from_image
+from ai_processing import generate_test_cases
 from utils.model_utils import load_custom_model
 import os
 from functools import wraps
@@ -71,13 +71,18 @@ class Project(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('projects', lazy=True))
 
+class TestSuite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    feature_name = db.Column(db.String(150), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project = db.relationship('Project', backref=db.backref('test_suites', lazy=True))
+
 class TestCase(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(500), nullable=False)
     expected_result = db.Column(db.String(500), nullable=False)
-    image_text = db.Column(db.Text, nullable=True)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-    project = db.relationship('Project', backref=db.backref('test_cases', lazy=True))
+    suite_id = db.Column(db.Integer, db.ForeignKey('test_suite.id'), nullable=False)
+    suite = db.relationship('TestSuite', backref=db.backref('test_cases', lazy=True))
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -145,11 +150,6 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
-@app.route('/home')
-@login_required
-def home():
-    return render_template('home.html')
-
 @app.route('/projects')
 @login_required
 def projects():
@@ -169,16 +169,18 @@ def save_project():
     db.session.add(new_project)
     db.session.commit()
 
-    return redirect(url_for('projects'))
+    return redirect(url_for('projects'))  
 
-@app.route('/view_project/<int:project_id>')
+@app.route('/view_suites')
 @login_required
-def view_project(project_id):
-    project = Project.query.get(project_id)
-    if project is None or project.user_id != session['user_id']:
-        return jsonify({"error": "Project not found or unauthorized access"}), 404
+def view_suites():
+    user_id = session['user_id']
+    # Alterar para buscar as suítes relacionadas ao projeto correto
+    suites = TestSuite.query.filter_by(project_id=1).all()  # Filtra por projeto_id, você pode ajustar isso para projetos dinâmicos
+    if not suites:
+        flash("No test suites found for this project.", "warning")
+    return render_template('view-suites.html', suites=suites)
 
-    return render_template('home.html', project=project)
 
 @app.route('/delete_project/<int:project_id>', methods=['POST'])
 @login_required
@@ -197,83 +199,96 @@ def delete_project(project_id):
 def formtests():
     return render_template('form-tests.html')
 
-@app.route('/create_tables')
-def create_tables():
-    db.create_all()
-    return "Tables created!"
+@app.route('/test_results')
+@login_required
+def test_results():
+    feature = request.args.get('feature')
+    test_cases = request.args.getlist('test_cases')
+    return render_template('test-results.html', test_cases=test_cases, feature=feature)
+
 
 def generate_test_cases(processed_image, description, quantity=1):
-    # Garantir que description e processed_image sejam strings
     description_str = str(description).title() if description else "Descrição inválida"
-    processed_image_str = str(processed_image) if processed_image else "Texto da imagem não extraído corretamente."
-
-    print(f"[DEBUG] description_str após conversão: {description_str}")
-    print(f"[DEBUG] processed_image_str após conversão: {processed_image_str}")
+    processed_image_str = str(processed_image) if isinstance(processed_image, str) else "Texto não extraído corretamente."
 
     test_cases = []
     for i in range(1, int(quantity) + 1):
         test_case_1 = f"Test Case {i}: Validar que o campo '{description_str}' é exibido corretamente na interface."
         test_case_2 = f"Test Case {i}: Verificar que a imagem processada contém o texto: '{processed_image_str}'."
         test_cases.append({"case": test_case_1, "expected_result": test_case_2})
-        print(f"[DEBUG] Test cases gerados para o loop {i}: {test_case_1}, {test_case_2}")
 
     return test_cases
-
-
 
 @app.route('/generate', methods=['POST'])
 @login_required
 def generate():
     if 'screenshot' not in request.files or 'description' not in request.form or 'feature' not in request.form:
         flash("Missing required fields", "danger")
-        print("[DEBUG] Campos obrigatórios ausentes.")
         return redirect(url_for('formtests'))
 
     screenshot = request.files['screenshot']
     description = request.form['description']
     feature = request.form['feature']
-    test_quantity = request.form.get('test_quantity', 1)  # Valor padrão de 1 teste, se não fornecido
-    test_type = request.form.get('test_type', 'testcase')  # Valor padrão 'testcase' se não fornecido
+    test_quantity = request.form.get('test_quantity', 1)
 
-    print(f"[DEBUG] Dados recebidos no form: screenshot={screenshot.filename}, description={description}, feature={feature}, test_quantity={test_quantity}, test_type={test_type}")
+    # Recuperar o projeto do usuário logado (ajuste conforme sua lógica)
+    project = Project.query.filter_by(user_id=session['user_id']).first()
+    if not project:
+        flash("No project found for this user.", "danger")
+        return redirect(url_for('projects'))
 
-    # Processar a imagem
+    # Processar a imagem e gerar os testes
     image_path = save_image(screenshot)
-    print(f"[DEBUG] Caminho da imagem salva: {image_path}")
-
     text = extract_text_from_image(image_path)
-    print(f"[DEBUG] Texto extraído da imagem: {text}")
-
-    # Verificar se o texto extraído é válido
     processed_image = str(text) if isinstance(text, str) else "Texto não extraído corretamente."
-    print(f"[DEBUG] Texto processado da imagem: {processed_image}")
 
-    # Exibir valores para depuração
-    print(f"[DEBUG] Processed Image: {processed_image}")
-    print(f"[DEBUG] Description: {description}")
-    print(f"[DEBUG] Feature: {feature}")
-    print(f"[DEBUG] Test Quantity: {test_quantity}")
-    print(f"[DEBUG] Test Type: {test_type}")
-
-    # Gerar casos de teste e garantir que estão corretos
+    # Gerar os casos de teste
     test_cases = generate_test_cases(processed_image, description, test_quantity)
 
-    # Exibir os casos de teste para debug
-    print(f"[DEBUG] Test Cases: {test_cases}")
+    # Criar uma nova suíte de teste e armazenar os casos
+    new_suite = TestSuite(feature_name=feature, project_id=project.id)
+    db.session.add(new_suite)
+    db.session.commit()
 
-    # Retornar os casos de teste na template 'test-results.html'
-    return render_template('test-results.html', test_cases=test_cases)
+    for case in test_cases:
+        new_test_case = TestCase(description=case['case'], expected_result=case['expected_result'], suite_id=new_suite.id)
+        db.session.add(new_test_case)
+    
+    db.session.commit()
 
+    return redirect(url_for('view_suites'))
 
+@app.route('/view_suite/<int:suite_id>')
+@login_required
+def view_suite(suite_id):
+    suite = TestSuite.query.get(suite_id)
+    if not suite:
+        flash("Suite not found", "danger")
+        return redirect(url_for('view_suites'))
 
+    test_cases = suite.test_cases
+    return render_template('view_suite.html', suite=suite, test_cases=test_cases)
 
+@app.route('/delete_suite/<int:suite_id>', methods=['POST'])
+@login_required
+def delete_suite(suite_id):
+    suite = TestSuite.query.get(suite_id)
+    if not suite:
+        flash("Suite not found", "danger")
+        return redirect(url_for('view_suites'))
+
+    TestCase.query.filter_by(suite_id=suite.id).delete()
+    db.session.delete(suite)
+    db.session.commit()
+
+    flash('Suite deleted successfully', 'success')
+    return redirect(url_for('view_suites'))
 
 
 # Ajustar o caminho para a pasta 'uploads'
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Criar pasta 'uploads' se não existir
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -283,7 +298,6 @@ def save_image(file):
     return image_path
 
 if __name__ == '__main__':
-    # Verificar se o modelo foi carregado corretamente
     if model:
         print("Modelo carregado com sucesso!")
     else:

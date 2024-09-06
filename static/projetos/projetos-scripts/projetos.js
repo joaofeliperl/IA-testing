@@ -1,5 +1,5 @@
-
 let deleteProjectId = null;
+const maxProjects = 9;
 
 function deleteProject(projectId) {
     deleteProjectId = projectId;
@@ -13,7 +13,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         })
             .then(response => response.json())
             .then(data => {
-                if (data.message) {  // Verifica se a resposta contém a chave 'message'
+                if (data.message) {
                     document.getElementById(`project-${deleteProjectId}`).remove();
                     $('#confirmModal').modal('hide');
                 } else {
@@ -21,5 +21,15 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 }
             })
             .catch(error => console.error('Erro:', error));
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const projectCount = document.querySelectorAll('.gray-card').length;
+    const newProjectBtn = document.getElementById('new-project-btn');
+
+    if (projectCount >= maxProjects) {
+        newProjectBtn.disabled = true;
+        newProjectBtn.title = "You have already reached the maximum number of projects";
     }
 });

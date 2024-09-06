@@ -8,44 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../static/projetos/projetos styles/projetos.css">
-    <style>
-        /* Estilo específico para o botão "Novo Projeto" */
-        .btn-new-project {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-        .btn-new-project:hover {
-            background-color: #218838;
-        }
-
-        /* Estilo do botão de fechar no modal */
-        .close {
-            color: #000;
-            opacity: 1;
-        }
-
-        .close:hover {
-            color: #555;
-            opacity: 1;
-        }
-
-        /* Ajusta o padding superior do container principal para descer o conteúdo */
-        .container {
-            padding-top: 70px; /* Ajuste conforme a altura da navbar */
-        }
-
-        /* Adiciona um ajuste para a navbar e para garantir que o conteúdo não se sobreponha */
-        .navbar {
-            background-color: #808080;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/projetos/projetos-styles/projetos.css">
 </head>
 
 <body>
@@ -58,31 +21,30 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                </ul>
+                <ul class="navbar-nav"></ul>
             </div>
         </div>
     </nav>
 
-    <div class="container text-center">
-        <h1 class="mt-5 text-white">IA Testing</h1>
-        <div class="row project-container">
-            <!-- Existing Card -->
-            <div class="col-md-4 col-lg-3">
-                <div class="gray-card mt-4 p-4">
-                    <h2>Project 1</h2>
-                    <p>Create and manage your projects easily.</p>
-                    <div class="button-container">
-                        <button class="btn btn-new-project" data-toggle="modal" data-target="#projectModal">New Project</button>
-                    </div>
+    <div class="container mt-5">
+        <div id="alert-message" class="alert alert-warning d-none"></div> <!-- Aviso Bootstrap -->
+
+        <div class="row">
+            <!-- Card de criação de projetos com destaque -->
+            <div class="col-md-4 mb-4">
+                <div class="gray-card highlight-card p-4 text-center shadow-sm" id="create-project-card">
+                    <h2><i class="fas fa-plus-circle"></i> Create Project</h2>
+                    <p>Create and manage your projects with ease.</p>
+                    <button class="btn btn-new-project" id="new-project-btn" data-toggle="modal"
+                        data-target="#projectModal">New Project</button>
                 </div>
             </div>
 
-            <!-- Dynamically Rendered Projects -->
+            <!-- Outros projetos renderizados -->
             {% for project in projects %}
-            <div class="col-md-4 col-lg-3" id="project-{{ project.id }}">
-                <div class="gray-card mt-4 p-4">
-                    <h2>{{ project.name }}</h2>
+            <div class="col-md-4 mb-4">
+                <div class="gray-card p-4 text-center shadow-sm" id="project-{{ project.id }}">
+                    <h2 class="project-title">{{ project.name | truncate(20) }}</h2>
                     <p>View your project and manage your tests</p>
                     <div class="button-container">
                         <button class="btn btn-danger" onclick="deleteProject({{ project.id }})">Delete</button>
@@ -94,7 +56,7 @@
         </div>
     </div>
 
-    <!-- Creation Modal -->
+    <!-- Modal de Criação de Projetos -->
     <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -119,19 +81,18 @@
                     </form>
                 </div>
                 <div class="modal-footer border-0">
-                    <!-- Footer left empty for alignment purposes -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Deletion Confirmation Modal -->
+    <!-- Modal de confirmação de exclusão -->
     <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content card-style">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="confirmModalLabel">Deletion Confirmation</h5>
+                    <h5 class="modal-title" id="confirmModalLabel">Delete Confirmation</h5>
                     <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -147,19 +108,16 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="text-center p-3">
-            © 2024 Copyright:
-            <a class="text-body" href="#">Your Website</a>
-        </div>
+    <footer class="footer mt-auto">
+        <div class="text-center p-3">© 2024 IA Testing. All Rights Reserved.</div>
     </footer>
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Custom JS -->
-    <script src="../static/projetos/projetos scripts/projetos.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="../static/projetos/projetos-scripts/projetos.js"></script>
 
 </body>
 

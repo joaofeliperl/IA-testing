@@ -1,0 +1,110 @@
+/* Estilo geral */
+body {
+    background-color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background-color: #343a40;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.container {
+    padding-top: 90px;
+}
+
+/* Card cinza com bordas arredondadas e sombras */
+.gray-card {
+    background-color: #343a40;
+    border-radius: 10px;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Destaque especial para o card de criação de projeto */
+.highlight-card {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.highlight-card h2 {
+    font-weight: bold;
+}
+
+.highlight-card .btn-new-project {
+    background-color: #218838;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+}
+
+.highlight-card .btn-new-project[disabled] {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.highlight-card .btn-new-project:hover:enabled {
+    background-color: #1e7e34;
+    color: #fff;
+}
+
+/* Botões de gerenciamento de projetos */
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    padding: 8px 16px;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+}
+
+/* Truncar o nome do projeto se exceder o limite de 20 caracteres */
+.project-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.footer {
+    background-color: #343a40;
+    text-align: center;
+    padding: 10px;
+    color: #fff;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    margin-top: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+
+    .highlight-card,
+    .gray-card {
+        margin-bottom: 20px;
+    }
+}
